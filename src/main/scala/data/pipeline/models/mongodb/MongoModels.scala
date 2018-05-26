@@ -1,27 +1,23 @@
 package data.pipeline.models.mongodb
 
-import Betaout.Entity.Request.{ProjectDetailsSetRequestEntity}
-import Betaout.Logs.logs
-import Betaout.Utility.PlayOnBson
-import Betaout.Utility.RemoteServiceCall
-
 import com.typesafe.config.ConfigFactory
-import reactivemongo.api.QueryOpts
+import data.pipeline.entity.SummaryData.SummaryData
+import data.pipeline.entity.logData.LogData
 import reactivemongo.api.commands.UpdateWriteResult
-import reactivemongo.bson.{BSONArray, BSONDocument, BSONObjectID}
+import reactivemongo.bson.BSONDocument
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class MongoModels extends logs {
+class MongoModels {
   val config = ConfigFactory.load.getConfig("mongodb")
   val mongoConnection = new MongoConnection()
   val tag = "MongoDb.MongoModels"
   val config_urlNames = ConfigFactory.load.getConfig("urlNames")
 
   def insertRawRecords(logData: LogData): Future[Boolean] = {
-    insertDocument = BSONDocument(
+    val insertDocument = BSONDocument(
       "auth" -> logData.auth,
       "degree" -> logData.degree,
       "events" -> logData.events,
@@ -44,9 +40,9 @@ class MongoModels extends logs {
       "official" -> logData.official,
       "port" -> logData.port,
       "server" -> logData.server,
-      "timeLimit" -> logData.timeLimit,
+      "timeLimit" -> logData.timeLimit
     )
-    collectionObj.insert(document = insertDocument).map {
+    mongoConnection.connect("data_pipeline","raw_records").insert(document = insertDocument).map {
       insertResult =>
         insertResult match {
           case UpdateWriteResult(true, _, _, _, _, _, _, errmsg) =>
@@ -64,7 +60,7 @@ class MongoModels extends logs {
 
 
   def insertSummaryRecords(summaryData: SummaryData): Future[Boolean] = {
-    insertDocument = BSONDocument(
+    val insertDocument = BSONDocument(
       "start_date" -> summaryData.start_date,
       "active_duration" -> summaryData.active_duration,
       "scores" -> summaryData.scores,
@@ -82,7 +78,7 @@ class MongoModels extends logs {
       "last_game_play" -> summaryData.last_game_play,
       "churned" -> summaryData.churned.getOrElse(1)
     )
-    collectionObj.insert(document = insertDocument).map {
+    mongoConnection.connect("data_pipeline","summary_data").insert(document = insertDocument).map {
       insertResult =>
         insertResult match {
           case UpdateWriteResult(true, _, _, _, _, _, _, errmsg) =>
@@ -102,8 +98,7 @@ class MongoModels extends logs {
     val selectorDoc = BSONDocument(
       "_id" -> name
     )
-    log.info(s"File : ${tag}   Method: securityIpExists    selectorDoc: ${BSONDocument.pretty(selectorDoc)}  ")
-    collectionObj.find(selectorDoc).one[BSONDocument].map(x => x != None)
+    collectionObj.find(selectorDoc).one[BSONDocument]
   }
 
 

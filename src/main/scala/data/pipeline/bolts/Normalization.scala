@@ -1,13 +1,19 @@
 package data.pipeline.bolts.Normalization
 
 import java.util.UUID
+
 import com.typesafe.config.ConfigFactory
+import data.pipeline.entity.SummaryData.SummaryData
+import data.pipeline.entity.converter.SummaryConverter.SummaryConverterReader
+import data.pipeline.entity.logData.LogData
+import data.pipeline.models.mongodb.MongoModels
 import org.apache.storm.task.{OutputCollector, TopologyContext}
 import org.json4s.native.Json
 import org.apache.storm.topology.OutputFieldsDeclarer
 import org.apache.storm.topology.base.BaseRichBolt
 import org.apache.storm.tuple.{Fields, Tuple, Values}
 import org.slf4j.{Logger, LoggerFactory}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -18,7 +24,8 @@ class Normalization extends BaseRichBolt {
   var mongoModels: MongoModels = _
   val log = LoggerFactory.getLogger(getClass)
   val productIDarrayKeyName = "products"
-  val observation_period = churned_period = 3 * 24 * 60 * 60
+  val observation_period = 3 * 24 * 60 * 60
+  val churned_period = 3 * 24 * 60 * 60
 
   override def prepare(config: java.util.Map[_, _], context: TopologyContext, collector: OutputCollector): Unit = {
     this.collector = collector
@@ -50,22 +57,22 @@ class Normalization extends BaseRichBolt {
                 summaryData.total_wins
               }
               val newSummaryData = SummaryData(
-                summaryData.start_date
-                  active_duration: data.date - summaryData.start_date,
+                summaryData.start_date,
+                data.date - summaryData.start_date,
                 newScores,
                 newDurations,
                 newDates,
-                newScores.max(),
-                newScores.min(),
+                newScores.max,
+                newScores.min,
                 mean_score,
                 newDurations.sum / newDurations.length,
-                Math.sqrt((newScores.map(_ - mean).map(t => t * t).sum) / newScores.length),
+                Math.sqrt((newScores.map(_ - mean_score).map(t => t * t).sum) / newScores.length),
                 summaryData.play_count + 1,
-                newScores.max() - mean_score / (summaryData.play_count + 1),
+                newScores.max - mean_score / (summaryData.play_count + 1),
                 if (mean_score == 0) {
                   summaryData.best_sub_mean_ratio
                 } else {
-                  (newScores.max() - mean_score) / mean_score
+                  (newScores.max - mean_score) / mean_score
                 },
                 total_wins,
                 data.date,
@@ -98,6 +105,8 @@ class Normalization extends BaseRichBolt {
               1
             }else if(data.team == 0 & data.`0_teams_score` > data.`1_teams_score`){
               1
+            }else{
+              0
             }
             val newSummaryData = SummaryData(
               data.date,

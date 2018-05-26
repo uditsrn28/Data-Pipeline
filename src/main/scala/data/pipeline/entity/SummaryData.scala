@@ -2,7 +2,7 @@ package data.pipeline.entity.SummaryData
 
 case class SummaryData(
                         start_date: Long,
-                        active_duration: Int,
+                        active_duration: Long,
                         scores: List[Int],
                         durations: List[Int],
                         dates: List[Long],
@@ -10,7 +10,7 @@ case class SummaryData(
                         worst_score: Float,
                         mean_score: Float,
                         mean_duration: Int,
-                        std_score: Float,
+                        std_score: Double,
                         play_count: Int,
                         best_sub_mean_count: Float,
                         best_sub_mean_ratio: Float,
