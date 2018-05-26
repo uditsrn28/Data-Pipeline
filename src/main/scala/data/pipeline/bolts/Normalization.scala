@@ -38,8 +38,6 @@ class Normalization extends BaseRichBolt {
       log.info(s"[$TAG][execute]   request_id : ${request_id}   tuple :  ${tuple.toString}")
       val message: String = tuple.getValueByField("str").toString.split("=", 2)(1).dropRight(1)
       val data = Json.apply(org.json4s.DefaultFormats).read[LogData](message)
-
-      // get from mongodb
       this.mongoModels.getDocumentsByName(data.name).map {
         bsonDocumentOption =>
           if (bsonDocumentOption != None) {
