@@ -35,7 +35,7 @@ class MongoModels {
       "1_teams_splats" -> logData.`1_teams_splats`,
       "date" -> logData.date,
       "duration" -> logData.duration,
-      "group" -> logData.group.getOrElse(""),
+      "group" -> logData.group,
       "mapId" -> logData.mapId,
       "official" -> logData.official,
       "port" -> logData.port,
@@ -76,7 +76,7 @@ class MongoModels {
       "best_sub_mean_ratio" -> summaryData.best_sub_mean_ratio,
       "total_wins" -> summaryData.total_wins,
       "last_game_play" -> summaryData.last_game_play,
-      "churned" -> summaryData.churned.getOrElse(1)
+      "churned" -> summaryData.churned
     )
     mongoConnection.connect("data_pipeline","summary_data").insert(document = insertDocument).map {
       insertResult =>
