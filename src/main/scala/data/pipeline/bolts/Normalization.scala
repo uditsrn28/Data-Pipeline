@@ -1,9 +1,6 @@
 package data.pipeline.bolts.Normalization
 
 import java.util.UUID
-import com.betaout.cassandra.Connector
-import com.betaout.normalizer.Entity._
-import com.betaout.cassandra.Operation.RecordsDatabase
 import com.typesafe.config.ConfigFactory
 import org.apache.storm.task.{OutputCollector, TopologyContext}
 import org.json4s.native.Json
@@ -12,7 +9,6 @@ import org.apache.storm.topology.base.BaseRichBolt
 import org.apache.storm.tuple.{Fields, Tuple, Values}
 import org.slf4j.{Logger, LoggerFactory}
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.betaout.redis._
 import scala.concurrent.Future
 
 class Normalization extends BaseRichBolt {
@@ -27,7 +23,6 @@ class Normalization extends BaseRichBolt {
   override def prepare(config: java.util.Map[_, _], context: TopologyContext, collector: OutputCollector): Unit = {
     this.collector = collector
     this.mongoModels = new MongoModels()
-    this.redisModels = new RedisModels()
   }
 
   override def execute(tuple: Tuple) {

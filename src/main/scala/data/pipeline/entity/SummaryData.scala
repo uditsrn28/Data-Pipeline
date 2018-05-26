@@ -5,7 +5,7 @@ case class SummaryData(
                         active_duration: Int,
                         scores: List[Int],
                         durations: List[Int],
-                        dates: List[Long]
+                        dates: List[Long],
                         best_score: Float,
                         worst_score: Float,
                         mean_score: Float,

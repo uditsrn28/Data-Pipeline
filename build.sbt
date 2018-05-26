@@ -1,4 +1,4 @@
-name := "Data Pipeline"
+name := "data-pipeline"
 version := "0.1"
 scalaVersion := "2.12.4"
 resolvers ++= Seq(
@@ -12,6 +12,7 @@ resolvers ++= Seq(
 val stormVersion = "1.1.0"
 val stormFluxVersion = "1.1.1"
 libraryDependencies ++= Seq(
+    "org.reactivemongo" %% "reactivemongo" % "0.12.1" withSources() withJavadoc(),
   "com.github.blemale" %% "scaffeine" % "2.1.0" % "compile",
   "org.apache.kafka" % "kafka_2.12" % "0.10.2.1"
     exclude("javax.jms", "jms")
@@ -75,7 +76,6 @@ libraryDependencies ++= Seq(
     exclude("org.elasticsearch.plugin","transport-netty4-client")
 )
 
-libraryDependencies <+= (scalaVersion) ("org.scala-lang" % "scala-reflect" % _)
 libraryDependencies += "org.clojure" % "clojure" % "1.7.0"
 libraryDependencies += "com.github.nscala-time" %% "nscala-time" % "2.16.0"
 libraryDependencies += "org.json4s" %% "json4s-native" % "3.5.3"
@@ -100,9 +100,9 @@ assemblyMergeStrategy in assembly := {
   case PathList("META-INF", "maven", "jline", "jline", xs@_*) => MergeStrategy.last
   case PathList("META-INF",xs @ _*) => MergeStrategy.discard
   case x =>
-    MergeStrategy.first
-  //    val oldStrategy = (assemblyMergeStrategy in assembly).value
-  //    oldStrategy(x)
+      MergeStrategy.first
+//    val oldStrategy = (assemblyMergeStrategy in assembly).value
+//    oldStrategy(x)
 }
 
 fullClasspath in(Test, assembly) := {

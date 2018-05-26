@@ -6,10 +6,6 @@ import reactivemongo.bson._
 object SummaryConverter {
 
   implicit object SummaryConverterReader extends BSONDocumentReader[SummaryData] {
-    best_sub_mean_ratio: Float,
-    total_wins: Int,
-    last_game_play: Long,
-    churned: Int
     def read(doc: BSONDocument): SummaryData = {
         SummaryData(
           doc.getAs[Long]("start_date").get,

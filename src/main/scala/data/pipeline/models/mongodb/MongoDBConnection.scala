@@ -1,7 +1,6 @@
 package data.pipeline.models.mongodb
 
-import Betaout.Logs.logs
-import Betaout.Utility.CallOtherServices._
+import data.pipeline.Logs.logs
 import com.typesafe.config.ConfigFactory
 import reactivemongo.api.MongoDriver
 import reactivemongo.api.collections.bson.BSONCollection
