@@ -60,6 +60,9 @@ class MongoModels {
 
 
   def insertSummaryRecords(summaryData: SummaryData): Future[Boolean] = {
+    val selectorDocument = BSONDocument(
+      "name" -> summaryData.name
+    )
     val insertDocument = BSONDocument(
       "name" -> summaryData.name,
       "start_date" -> summaryData.start_date,
@@ -79,7 +82,7 @@ class MongoModels {
       "last_game_play" -> summaryData.last_game_play,
       "churned" -> summaryData.churned
     )
-    mongoConnection.connect("data_pipeline","summary_data").insert(document = insertDocument).map {
+    mongoConnection.connect("data_pipeline","summary_data").update(selectorDocument,insertDocument).map {
       insertResult =>
         insertResult match {
           case UpdateWriteResult(true, _, _, _, _, _, _, errmsg) =>
@@ -97,7 +100,7 @@ class MongoModels {
   def getDocumentsByName(name: String): Future[Option[BSONDocument]] = {
     val collectionObj = mongoConnection.connect("data_pipeline", "summary_data")
     val selectorDoc = BSONDocument(
-      "_id" -> name
+      "name" -> name
     )
     collectionObj.find(selectorDoc).one[BSONDocument]
   }
