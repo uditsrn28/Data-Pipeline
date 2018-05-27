@@ -55,6 +55,7 @@ class Normalization extends BaseRichBolt {
                 summaryData.total_wins
               }
               val newSummaryData = SummaryData(
+                summaryData.name,
                 summaryData.start_date,
                 data.date - summaryData.start_date,
                 newScores,
@@ -79,6 +80,7 @@ class Normalization extends BaseRichBolt {
               this.mongoModels.insertSummaryRecords(newSummaryData)
             }else if(data.date < summaryData.start_date + observation_period + churned_period){
               val newSummaryData = SummaryData(
+                summaryData.name,
                 summaryData.start_date,
                 summaryData.active_duration,
                 summaryData.scores,
@@ -107,6 +109,7 @@ class Normalization extends BaseRichBolt {
               0
             }
             val newSummaryData = SummaryData(
+              data.name,
               data.date,
               0,
               List(data.score),

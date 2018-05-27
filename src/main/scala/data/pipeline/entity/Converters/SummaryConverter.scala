@@ -10,6 +10,7 @@ object SummaryConverter {
   implicit object SummaryConverterReader extends BSONDocumentReader[SummaryData] {
     def read(doc: BSONDocument): SummaryData = {
         SummaryData(
+          doc.getAs[String]("name").get,
           doc.getAs[Long]("start_date").get,
           doc.getAs[Long]("active_duration").get,
           doc.getAs[List[Int]]("scores").get,

@@ -1,6 +1,7 @@
 package data.pipeline.entity.SummaryData
 
 case class SummaryData(
+                        name: String,
                         start_date: Long,
                         active_duration: Long,
                         scores: List[Int],

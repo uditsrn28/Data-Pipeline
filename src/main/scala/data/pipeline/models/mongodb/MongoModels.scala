@@ -61,6 +61,7 @@ class MongoModels {
 
   def insertSummaryRecords(summaryData: SummaryData): Future[Boolean] = {
     val insertDocument = BSONDocument(
+      "name" -> summaryData.name,
       "start_date" -> summaryData.start_date,
       "active_duration" -> summaryData.active_duration,
       "scores" -> summaryData.scores,
