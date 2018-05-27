@@ -25,9 +25,13 @@ class Splitter extends BaseRichBolt {
 
   override def execute(tuple: Tuple) {
     try {
-      val message : String = tuple.getValueByField("str").toString.split("=", 2)(1).dropRight(1)
+	log.info(s"[${tag}][execute] request_id : 11111")
+      //log.info(s"[${tag}][execute] request_id : N.A  data : ${tuple.getString(0).toString}")
+      //val message : String = tuple.getString(0) //.toString.split("=", 2)(1).dropRight(1)
+      val records: Array[Byte] = tuple.getBinary(0)
+      val message = (records.map(_.toChar)).mkString.toString()
       val data = Json.apply(org.json4s.DefaultFormats).read[LogData](message)
-      collector.emit("default", new Values(data.name , data))
+      collector.emit("default", new Values(data.name , message))
     }
     catch {
       case exception: Exception => {
@@ -41,6 +45,6 @@ class Splitter extends BaseRichBolt {
   }
 
   override def declareOutputFields(declarer: OutputFieldsDeclarer) {
-    declarer.declareStream("default", new Fields("name", "data"))
+    declarer.declareStream("default", new Fields("user_name", "data"))
   }
 }

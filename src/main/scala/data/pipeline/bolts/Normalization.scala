@@ -1,4 +1,4 @@
-package data.pipeline.bolts.Normalization
+package data.pipeline.bolts
 
 import java.util.UUID
 
@@ -141,7 +141,7 @@ class Normalization extends BaseRichBolt {
   }
 
   override def declareOutputFields(declarer: OutputFieldsDeclarer) {
-    declarer.declareStream("default", new Fields("event_data", "user_id", "entity_name"))
+//    declarer.declareStream("default", new Fields("event_data", "user_id", "entity_name"))
   }
 
 }

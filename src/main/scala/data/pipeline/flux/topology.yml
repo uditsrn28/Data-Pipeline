@@ -2,7 +2,7 @@ bolts:
 - className: data.pipeline.bolts.Normalization
   id: normalization
   parallelism: 1
-- className: data.pipeline.bolts.Normalization
+- className: data.pipeline.bolts.Splitter
   id: splitter
   parallelism: 1
 components:
@@ -16,8 +16,8 @@ components:
 - className: org.apache.storm.kafka.SpoutConfig
   constructorArgs:
   - ref: zkHosts
-  - datapipeline
-  - /datapipeline
+  - raw_data_test
+  - /raw_data_test
   - datapipeline_consumer
   id: datapipeline_spoutconfig
   properties:
@@ -48,7 +48,7 @@ spouts:
   id: datapipeline_spout
   parallelism: 1
 streams:
-- from: spout_external_event_stream
+- from: datapipeline_spout 
   grouping:
     streamId: default
     type: SHUFFLE
@@ -58,6 +58,6 @@ streams:
   grouping:
     streamId: default
     type: FIELDS
-    args: ["name"]
+    args: ["user_name"]
   name: splitter_to_normalization
   to: normalization

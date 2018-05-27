@@ -14,7 +14,7 @@ class MongoModels {
   val config = ConfigFactory.load.getConfig("mongodb")
   val mongoConnection = new MongoConnection()
   val tag = "MongoDb.MongoModels"
-  val config_urlNames = ConfigFactory.load.getConfig("urlNames")
+//  val config_urlNames = ConfigFactory.load.getConfig("urlNames")
 
   def insertRawRecords(logData: LogData): Future[Boolean] = {
     val insertDocument = BSONDocument(
@@ -94,7 +94,7 @@ class MongoModels {
   }
 
   def getDocumentsByName(name: String): Future[Option[BSONDocument]] = {
-    val collectionObj = mongoConnection.connect(config.getString("database"), config.getString("security_collection"))
+    val collectionObj = mongoConnection.connect("data_pipeline", "summary_data")
     val selectorDoc = BSONDocument(
       "_id" -> name
     )
