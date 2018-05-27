@@ -36,7 +36,7 @@ class Normalization extends BaseRichBolt {
     val request_id: String = UUID.randomUUID().toString
     try {
       log.info(s"[$TAG][execute]   request_id : ${request_id}   tuple :  ${tuple.toString}")
-      val message: String = tuple.getValueByField("str").toString.split("=", 2)(1).dropRight(1)
+      val message: String = tuple.getValueByField("data").toString
       val data = Json.apply(org.json4s.DefaultFormats).read[LogData](message)
       this.mongoModels.getDocumentsByName(data.name).map {
         bsonDocumentOption =>
